@@ -9,7 +9,15 @@ const MultipleReturns = () => {
 
   useEffect(() => {
     fetch(url)
-      .then((resp) => resp.json())
+      .then((resp) => {
+        if (resp.status >= 200 && resp.status <= 299) {
+          return resp.json();
+        } else {
+          setIsLoading(false);
+          setIsError(true);
+          throw new Error(resp.statusText);
+        }
+      })
       .then((user) => {
         const { login } = user;
         setUser(login);
