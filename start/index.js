@@ -65,3 +65,17 @@ const profile = {
 profile.setName("aki adilovic");
 console.log(profile.firstName);
 console.log(profile.lastName);
+
+const Car = function (model) {
+  this.model = model;
+};
+
+Car.prototype.getModel = function () {
+  return this.model;
+};
+
+const toyota = new Car("toyota");
+console.log(toyota.getModel());
+
+const nissan = new Car("nissan");
+console.log(nissan.getModel());
