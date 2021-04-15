@@ -12,11 +12,13 @@ const Index = () => {
     e.preventDefault();
     if (name) {
       setShowModal(true);
-      setPeople({
+      setPeople([
         ...people,
-        id: new Date().getTime().toString(),
-        name: { name },
-      });
+        {
+          id: new Date().getTime().toString(),
+          name,
+        },
+      ]);
       setName("");
     } else {
       setShowModal(true);
