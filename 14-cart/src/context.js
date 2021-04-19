@@ -1,5 +1,5 @@
 import React, { useState, useContext, useReducer, useEffect } from "react";
-import cartItems from "./data";
+// import cartItems from "./data";
 import reducer from "./reducer";
 // ATTENTION!!!!!!!!!!
 // I SWITCHED TO PERMANENT DOMAIN
@@ -8,11 +8,12 @@ const AppContext = React.createContext();
 
 const initialState = {
   loading: false,
-  cart: cartItems,
+  cart: [],
   total: 0,
   amount: 0,
 };
 
+// REDUCE EXERCISE
 const staff = [
   { name: "bob", age: 33, position: "worker", salary: 234 },
   { name: "boam", age: 73, position: "work", salary: 24 },
@@ -27,6 +28,7 @@ const totalSalary = staff.reduce((total, person) => {
 }, 0);
 console.log(totalSalary);
 
+// REDUCE EXERCISE
 const phones = [
   {
     title: "Samsung Galaxy S7",
@@ -50,6 +52,40 @@ const phones = [
   },
 ];
 
+let totalData = phones.reduce(
+  (state, phone) => {
+    const { price, amount } = phone;
+    state.amount += amount;
+    const totalPrice = amount * price;
+    state.price += totalPrice;
+    return state;
+  },
+  { price: 0, amount: 0 }
+);
+totalData.price = parseFloat(totalData.price.toFixed(2));
+
+console.log("phones " + totalData.amount + " " + totalData.price);
+
+// REDUCE EXERCISE
+const url2 = "https://api.github.com/users/john-smilga/repos?per_page=100";
+
+const fetchData = async () => {
+  const response = await fetch(url2);
+  const data = await response.json();
+  const newData = data.reduce((total, item) => {
+    const { language } = item;
+    if (language) {
+      total[language] = total[language] + 1 || 1;
+    }
+    return total;
+  }, {});
+  console.log(newData);
+};
+
+fetchData();
+
+// PHONE PROJECT
+
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -72,6 +108,17 @@ const AppProvider = ({ children }) => {
   useEffect(() => {
     dispatch({ type: "GET_TOTALS" });
   }, [state.cart]);
+
+  const fetchPhones = async () => {
+    dispatch({ type: "LOADING" });
+    const response = await fetch(url);
+    const cart = await response.json();
+    dispatch({ type: "DISPLAY_ITEMS", payload: cart });
+  };
+
+  useEffect(() => {
+    fetchPhones();
+  }, []);
 
   return (
     <AppContext.Provider
